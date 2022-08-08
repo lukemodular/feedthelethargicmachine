@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Feed the machine!</title>
+		<style>
+		 	html {
+				box-sizing: border-box;
+			}
+		 	*, *:before, *:after {
+				box-sizing: inherit;
+			}
+		 	html, body {
+				margin: 0;
+				padding: 0;
+				background-color: black;
+			}
+      		body {
+        		font-family: Helvetica, sans-serif;
+				width: 100%;
+				max-width: 50ch;
+				padding: 2rem 1rem;
+				color: white;
+				margin: 0 auto;
+				font-size: calc(1rem + 0.5vw);
+      		}
+		 	input,
+			button {
+				background-color: black;
+				color: white;
+				font-size: inherit;
+				padding: 0.5rem 0.5rem;
+				max-width: 100%;
+				border: 3px solid white;
+			}
+		 	button {
+				font-weight: bold;
+				border: 3px solid white;
+				border-radius: 10px;
+				padding: 0.25rem 1rem;
+			}
+		 	main {
+				display: flex;
+				flex-direction: column;
+			}
+		 	.stack > * + * {
+  			 	margin-top: 1.5rem;
+			}
+		 	p {
+				margin-bottom: 0;
+			}
+		 	.center {
+				margin: 4rem 0;
+			}
+		 	.stage {
+				animation: animateBg 10s linear infinite;
+				background-image: linear-gradient(0deg,#cf5c5c,#c19b4a,#def2a0,#c6ee4a,#42eca6,#64b3d9,#208ea2,#498ada,#5b73df,#897ed3,#cf5c5c,#c19b4a);
+				background-size: 100% 1100%;
+			}
+		 	@keyframes animateBg {
+				0% { background-position: 0% 0%; }
+				100% { background-position: 0% 100%; }
+			}
+
+		</style>
+		<script>
+				var ws;
+				function websocket_init(){
+					ws = new WebSocket('wss://feedthelethargicmachine.eu.ngrok.io');
+					ws.onopen = websocket_open;
+					ws.onmessage = websocket_receive;
+				}	
+
+				function button_send(){
+					ws.send(document.getElementById( "textinput" ).value);	
+				}
+				function websocket_open(event){
+					console.log('Websocket open')
+				}
+				function websocket_receive(event){
+					console.log(event.data);
+				}
+		</script>
+	</head>
+	
+	<body onload = "websocket_init()">
+		<main>
+			<form>
+				<div class="stack">
+					<p>What do you think about this dancefloor?!</p>
+					<p>
+						<label for="text">Feed our collective memory about it:</label>
+					</p>
+					<p class="stack center">
+						<input class="stage" type="text" id="textinput" name="text" required size="40"
+								 pattern="[\x00-\x7F]{4,255}" placeholder="rave motto">
+						<span class="validity"></span>
+
+						<button class="stage" onclick = "button_send()" >SEND</button>
+					</p>
+					<p>I accept 255 charactarers.</p>
+				</div>
+			</form>
+			<div class="stack">
+				<img src = "C:\Users\luke\Desktop\glitch_display\prog\Dep\penroseTiling.jpg" > </br>
+				<p>A project by <a href="https://lukastruniger.net/">Lukas Truniger</a>.</p>
+			</div>
+		</main>
+	</body>
+</html>
