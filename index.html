@@ -15,6 +15,7 @@
 				padding: 0;
 				min-height: 100vh;
 				background-color: black;
+				font-size: calc(1rem + 0.5vw);
 			}
 		 	.bg {
 				background-image: url('bg.jpg');
@@ -33,7 +34,6 @@
 				padding: 2rem 1rem;
 				color: white;
 				margin: 0 auto;
-				font-size: calc(1rem + 0.5vw);
 				position: relative;
 				z-index: 2;
       		}
@@ -47,6 +47,7 @@
 				border: 3px solid white;
 			}
 		 	button {
+				margin: inherit;
 				font-weight: bold;
 				border: 3px solid white;
 				border-radius: 10px;
@@ -67,44 +68,90 @@
 			}
 		 	.stage {
 				animation: animateBg 10s linear infinite;
-				background-image: linear-gradient(0deg,#cf5c5c,#c19b4a,#def2a0,#c6ee4a,#42eca6,#64b3d9,#208ea2,#498ada,#5b73df,#897ed3,#cf5c5c,#c19b4a);
+				background-image: linear-gradient(0deg,#cf5c5c,#c19b4a,#42eca6,#64b3d9,#208ea2,#498ada,#5b73df,#897ed3,#cf5c5c,#c19b4a);
 				background-size: 100% 1100%;
 			}
 		 	.header {
-		 		margin: 2rem 0;
-				font-size: calc(1.3rem + 0.8vw);
+		 		margin: 3rem 0;
+				font-size: 1.3em;
 			}
 			.body {
-		 		margin: 2rem 0;
-				font-size: calc(1rem + 0.5vw);
+				font-size: 1rem;
 			}
 			.footer {
-		 		margin: 2rem 0;
-				font-size: calc(0.5rem + 0.3vw);
+		 		margin: 3rem 0 0 0;
+				font-size: 0.5rem;
 			}
 		 	@keyframes animateBg {
 				0% { background-position: 0% 0%; }
 				100% { background-position: 0% 100%; }
 			}
+		 	.hidden {
+				display: none;
+			}
 
 		</style>
 		<script>
-				var ws;
-				function websocket_init(){
-					ws = new WebSocket('wss://feedthelethargicmachine.eu.ngrok.io');
-					ws.onopen = websocket_open;
-					ws.onmessage = websocket_receive;
-				}	
+			var ws;
+		 	var sending;
+		 	var sent;
+		 	var form;
+		 	var error;
+		 	var again;
+		 	var c = {
+				h: 'hidden'
+			}
+		 	function websocket_init(){
+				ws = new WebSocket('wss://feedthelethargicmachine.eu.ngrok.io');
+				ws.onopen = websocket_open;
+				ws.onmessage = websocket_receive;
+			}
 
-				function button_send(){
-					ws.send(document.getElementById( "textinput" ).value);	
+			function button_send ( event ) {
+				event.preventDefault();
+				sending.classList.toggle( c.h );
+				form.classList.toggle( c.h );
+				try {
+					ws.send(document.getElementById( "textinput" ).value);
 				}
-				function websocket_open(event){
-					console.log('Websocket open')
+				catch ( error ) {
+					sending.classList.toggle( c.h );
+					console.error( error );
+					error.classList.toggle( c.h );
+					window.setTimeout( () => {
+						error.classList.toggle( c.h );
+						form.classList.toggle( c.h );
+					}, 2500 );
 				}
-				function websocket_receive(event){
-					console.log(event.data);
-				}
+				window.setTimeout( () => {
+					sending.classList.toggle( c.h );
+					sent.classList.toggle( c.h );
+				}, 2000 );
+			}
+
+		 	function websocket_open(event){
+				console.log('Websocket open')
+			}
+		 	function websocket_receive(event){
+				console.log(event.data);
+			}
+		 	document.addEventListener( 'DOMContentLoaded', () => {
+				sending = document.querySelector( '#sending' );
+				sent = document.querySelector( '#sent' );
+				form = document.querySelector( '#input' );
+				error = document.querySelector( '#error' );
+				again = document.querySelector( '.again' );
+		 		document.querySelector( 'button#send' )
+		 				.addEventListener( 'click', button_send );
+				again.addEventListener( 'click', ( event ) => {
+					event.preventDefault();
+					document.getElementById( "textinput" ).value = '';
+					for ( var el of [ sending, sent, error, again ] ) {
+						el.classList.add( c.h );
+					};
+					form.classList.remove( c.h );
+				});
+			});
 		</script>
 	</head>
 	
@@ -121,14 +168,28 @@
 					<p>
 						<label for="text">Feed our collective memory here:</label>
 					</p>
-					<p class="stack center">
-						<input class="stage" type="text" id="textinput" name="text" required size="40"
-								 pattern="[\x00-\x7F]{4,255}" placeholder="Give it to me!">
-						<span class="validity"></span>
+					<div class="stack center">
+						<div id="input" class="stack">
+							<input class="stage" type="text" id="textinput" name="text" required size="40"
+								   pattern="[\x00-\x7F]{4,255}" placeholder="Give it to me!">
+							<button id="send" class="stage">SEND</button>
+						</div>
 
-						<button class="stage" onclick = "button_send()" >SEND</button>
-					</p>
-					<p>I accept 255 charactarers.</p>
+						<p id="sending" class="hidden">
+							Sending..
+						</p>
+						<p id="error" class="hidden">
+							Sorry, there was an error and we could not receive your message.
+						</p>
+
+						<div id="sent" class="hidden stack">
+							<p>
+								Sent
+							</p>
+							<button class="again stage">AGAIN?</button>
+						</div>
+						<p>I accept 255 characters.</p>
+					</div>
 				</div>
 			</form>
 			<div class="stack footer">
