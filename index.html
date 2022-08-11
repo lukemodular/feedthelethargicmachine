@@ -57,7 +57,15 @@
 				background-image: linear-gradient(0deg,#cf5c5c,#c19b4a,#def2a0,#c6ee4a,#42eca6,#64b3d9,#208ea2,#498ada,#5b73df,#897ed3,#cf5c5c,#c19b4a);
 				background-size: 100% 1100%;
 			}
-		 	.footer {
+		 	.header {
+		 		margin: 2rem 0;
+				font-size: calc(1.3rem + 0.8vw);
+			}
+			.body {
+		 		margin: 2rem 0;
+				font-size: calc(1rem + 0.5vw);
+			}
+			.footer {
 		 		margin: 2rem 0;
 				font-size: calc(0.5rem + 0.3vw);
 			}
@@ -91,9 +99,11 @@
 		<main>
 			<form>
 				<div class="stack">
-					<p>What do you think about all of this?!</p>
-					<p>A machine learning algorithm – trained on historical rave aphorisms and truisms, philosophical reflections, mottos of rave-parades and song titles ranging from Eurodance to underground Techno – is fed with your spontaneous thoughts.
-					Collectively imagined texts emerge on the LED-display, fluidly and absurdly morphing between different visions and ideas about our hedonistic pleasure.</p>
+					<p class="stack header">
+						What do you think about all of this?!</p>
+					<p class="stack body">
+						A machine learning algorithm – trained on historical rave aphorisms and truisms, mottos of rave-parades, social reflections and song titles ranging from Eurodance to underground Techno – is fed with your spontaneous thoughts.
+						Collectively imagined texts emerge on the LED-display, fluidly and absurdly morphing between different visions and ideas about our hedonistic pleasure.</p>
 					<p>
 						<label for="text">Feed our collective memory here:</label>
 					</p>
