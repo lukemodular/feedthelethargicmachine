@@ -13,9 +13,20 @@
 		 	html, body {
 				margin: 0;
 				padding: 0;
+				min-height: 100vh;
 				background-color: black;
 			}
-      		body {
+		 	.bg {
+				background-image: url('bg.jpg');
+				opacity: 0.2;
+				height: 100%;
+				width: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+				z-index: 1;
+			}
+      		main {
         		font-family: Helvetica, sans-serif;
 				width: 100%;
 				max-width: 50ch;
@@ -23,6 +34,8 @@
 				color: white;
 				margin: 0 auto;
 				font-size: calc(1rem + 0.5vw);
+				position: relative;
+				z-index: 2;
       		}
 		 	input,
 			button {
@@ -96,6 +109,7 @@
 	</head>
 	
 	<body onload = "websocket_init()">
+		<div class="bg"></div>
 		<main>
 			<form>
 				<div class="stack">
